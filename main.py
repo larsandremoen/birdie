@@ -35,11 +35,22 @@ async def startup_event():
     except FileNotFoundError:
         pass
 
+def similar_tueets(tueet: dict):
+    words = tueet["text"].split()
+    similar = set()
+    for word in words:
+        for simtueet in tueets:
+            if simtueet["id"] == tueet["id"]:
+                continue
+            if word in simtueet["text"]:
+                similar.add(simtueet["id"])
+    return [tueets[s] for s in similar]
+
 
 @app.get("/get/tueets")
 def get_tueets():
     random_tueet = random.choice(tueets) if len(tueets) > 0 else None
-    return {"data": random_tueet}
+    return {"random": random_tueet, "similar": similar_tueets(random_tueet)}
 
 
 @app.post("/post/tueet")
