@@ -9,4 +9,5 @@
 
 # Run
 
+´pipenv shell´
 `uvicorn main:app --reload`
