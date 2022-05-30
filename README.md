@@ -5,8 +5,8 @@
 
 # Install
 
-`pipenv install`
+`make install`
 
 # Run
 
-`uvicorn main:app --reload`
+´make run´
