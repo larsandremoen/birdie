@@ -17,9 +17,14 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
-    with open("tueets", "rb") as fp:
-        print("Loaded tueets")
-        tueets = pickle.load(fp)
+    global tueets
+
+    try:
+        with open("tueets", "rb") as fp:
+            print("Loaded tueets")
+            tueets = pickle.load(fp)
+    except FileNotFoundError:
+        pass
 
 
 @app.get("/get/tueets")
