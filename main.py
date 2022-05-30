@@ -1,8 +1,9 @@
-from typing import Union
-from pydantic import BaseModel
-from fastapi import FastAPI
-
+import pickle
 import random
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
 
 tueets = []
 
@@ -14,11 +15,16 @@ class Tueet(BaseModel):
 app = FastAPI()
 
 
+@app.on_event("startup")
+async def startup_event():
+    with open("tueets", "rb") as fp:
+        print("Loaded tueets")
+        tueets = pickle.load(fp)
+
+
 @app.get("/get/tueets")
 def get_tueets():
-
-    # TODO open local file
-    random_tueet = random.choice(tueets)
+    random_tueet = random.choice(tueets) if len(tueets) > 0 else None
     return {"data": random_tueet}
 
 
@@ -27,5 +33,7 @@ def read_root(tueet: Tueet):
     print("tueet ", tueet)
 
     tueets.append({"text": tueet.text, "id": len(tueets)})
-    # TODO save locally
+    with open("tueets", "wb") as filehandle:
+        pickle.dump(tueets, filehandle)
+
     return {"success": True}
